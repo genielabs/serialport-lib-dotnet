@@ -2,11 +2,11 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>SerialPortLib</id>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
         <title>SerialPortLib</title>
         <authors>Generoso Martello</authors>
         <owners>G-Labs</owners>
-        <licenseUrl>https://github.com/genielabs/serialport-lib-dotnet/blob/master/LICENCE</licenseUrl>
+        <licenseUrl>https://github.com/genielabs/serialport-lib-dotnet/blob/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/genielabs/serialport-lib-dotnet/</projectUrl>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <description>Serial Port libray for .Net / Mono</description>
@@ -16,7 +16,7 @@
 - Hot plug
 - Automatically restabilish connection on error/disconnect
 - It overcomes the lack of *DataReceived* event in Mono</summary>
-        <releaseNotes>Initial release</releaseNotes>
+        <releaseNotes>Fixed license file url in nuspec</releaseNotes>
         <copyright>G-Labs</copyright>
         <tags>serial port</tags>
         <frameworkAssemblies>
