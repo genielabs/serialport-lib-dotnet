@@ -1,0 +1,12 @@
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+[Bb]in/
+[Oo]bj/
+
+Thumbs.db
+*.suo
+*.userprefs
+packages/NLog*
