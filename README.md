@@ -18,30 +18,31 @@ Run `Install-Package SerialPortLib` in the [Package Manager Console](http://docs
 ## Example usage
 
 ```csharp
-    using SerialPortLib;
-    ...
-    var serialPort = new SerialPortInput();
+using SerialPortLib;
+...
+var serialPort = new SerialPortInput();
 
-    // Listen to Serial Port events
+// Listen to Serial Port events
 
-    serialPort.ConnectionStatusChanged += delegate(object sender, ConnectionStatusChangedEventArgs args) {
-        Console.WriteLine("Connected = {0}", args.Connected);
-    };
+serialPort.ConnectionStatusChanged += delegate(object sender, ConnectionStatusChangedEventArgs args) 
+{
+    Console.WriteLine("Connected = {0}", args.Connected);
+};
 
-    serialPort.MessageReceived += delegate(object sender, MessageReceivedEventArgs args)
-    {
-        Console.WriteLine("Received message: {0}", BitConverter.ToString(args.Data));
-    };
+serialPort.MessageReceived += delegate(object sender, MessageReceivedEventArgs args)
+{
+    Console.WriteLine("Received message: {0}", BitConverter.ToString(args.Data));
+};
 
-    // Set port options
-    serialPort.SetPort("/dev/ttyUSB0", 115200);
+// Set port options
+serialPort.SetPort("/dev/ttyUSB0", 115200);
 
-    // Connect the serial port
-    serialPort.Connect();
+// Connect the serial port
+serialPort.Connect();
 
-    // Send a message
-    var message = System.Text.Encoding.UTF8.GetBytes("Hello World!");
-    serialPort.SendMessage(message);
+// Send a message
+var message = System.Text.Encoding.UTF8.GetBytes("Hello World!");
+serialPort.SendMessage(message);
 ```
 
 ## License
