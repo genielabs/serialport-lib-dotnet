@@ -73,7 +73,7 @@ namespace Test.Serial
 
         static void SerialPort_ConnectionStatusChanged(object sender, ConnectionStatusChangedEventArgs args)
         {
-            Console.WriteLine("Serial port connected status = {0}", args.Connected);
+            Console.WriteLine("Serial port connection status = {0}", args.Connected);
         }
     }
 }

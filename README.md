@@ -17,14 +17,17 @@ Run `Install-Package SerialPortLib` in the [Package Manager Console](http://docs
 
 ## Example usage
 
+```csharp
     using SerialPortLib;
     ...
     var serialPort = new SerialPortInput();
 
     // Listen to Serial Port events
+
     serialPort.ConnectionStatusChanged += delegate(object sender, ConnectionStatusChangedEventArgs args) {
         Console.WriteLine("Connected = {0}", args.Connected);
     };
+
     serialPort.MessageReceived += delegate(object sender, MessageReceivedEventArgs args)
     {
         Console.WriteLine("Received message: {0}", BitConverter.ToString(args.Data));
@@ -39,7 +42,7 @@ Run `Install-Package SerialPortLib` in the [Package Manager Console](http://docs
     // Send a message
     var message = System.Text.Encoding.UTF8.GetBytes("Hello World!");
     serialPort.SendMessage(message);
-
+```
 
 ## License
 
