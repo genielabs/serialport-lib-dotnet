@@ -2,13 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>SerialPortLib</id>
-        <version>1.0.3</version>
+        <version>1.0.6</version>
         <title>SerialPortLib</title>
         <authors>Generoso Martello</authors>
         <owners>G-Labs</owners>
         <licenseUrl>https://github.com/genielabs/serialport-lib-dotnet/blob/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/genielabs/serialport-lib-dotnet/</projectUrl>
-        <requireLicenseAcceptance>true</requireLicenseAcceptance>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Serial Port libray for .Net / Mono
 Features
 - Easy to use
@@ -17,19 +17,16 @@ Features
 - Automatically restabilish connection on error/disconnect
 - It overcomes the lack of *DataReceived* event in Mono</description>
         <summary>Serial Port libray for .Net / Mono</summary>
-        <releaseNotes>Fixed missing NLog dependency in nuspec file</releaseNotes>
+        <releaseNotes>Renamed ConnectionStateChanged event to ConnectionStatusChanged</releaseNotes>
         <copyright>G-Labs</copyright>
         <tags>serial port</tags>
         <dependencies>
             <dependency id="NLog" version="4.0.1" />
         </dependencies>
-        <frameworkAssemblies>
-            <frameworkAssembly assemblyName="System" targetFramework=".NETFramework4.5" />
-        </frameworkAssemblies>
     </metadata>
     <files>
-        <file src="bin\Debug\SerialPortLib.dll" target="SerialPortLib.dll" />
-        <file src="bin\Debug\SerialPortLib.dll.mdb" target="SerialPortLib.dll.mdb" />
-        <file src="bin\Debug\SerialPortLib.xml" target="SerialPortLib.xml" />
+        <file src="bin\Debug\SerialPortLib.dll" target="lib\SerialPortLib.dll" />
+        <file src="bin\Debug\SerialPortLib.dll.mdb" target="lib\SerialPortLib.dll.mdb" />
+        <file src="bin\Debug\SerialPortLib.xml" target="lib\SerialPortLib.xml" />
     </files>
 </package>

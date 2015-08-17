@@ -62,18 +62,16 @@ namespace SerialPortLib
         /// <summary>
         /// Connected state changed event.
         /// </summary>
-        public delegate void ConnectedStateChangedEvent(object sender, ConnectedStateChangedEventArgs statusargs);
-
+        public delegate void ConnectionStatusChangedEvent(object sender, ConnectionStatusChangedEventArgs args);
         /// <summary>
         /// Occurs when connected state changed.
         /// </summary>
-        public event ConnectedStateChangedEvent ConnectedStateChanged;
+        public event ConnectionStatusChangedEvent ConnectionStatusChanged;
 
         /// <summary>
         /// Message received event.
         /// </summary>
-        public delegate void MessageReceivedEvent(byte[] message);
-
+        public delegate void MessageReceivedEvent(object sender, MessageReceivedEventArgs args);
         /// <summary>
         /// Occurs when message received.
         /// </summary>
@@ -161,6 +159,8 @@ namespace SerialPortLib
 
         #region Private members
 
+        #region Serial Port handling
+
         private bool Open()
         {
             Close();
@@ -197,10 +197,7 @@ namespace SerialPortLib
                 // Start the Reader task
                 readerTokenSource = new CancellationTokenSource();
                 readerTask = Task.Factory.StartNew(() => ReaderTask(readerTokenSource.Token), readerTokenSource.Token);
-                if (ConnectedStateChanged != null)
-                {
-                    ConnectedStateChanged(this, new ConnectedStateChangedEventArgs(isConnected));
-                }
+                OnConnectionStatusChanged(new ConnectionStatusChangedEventArgs(isConnected));
             }
             return success;
         }
@@ -219,10 +216,8 @@ namespace SerialPortLib
                     logger.Error(e);
                 }
                 serialPort = null;
-                if (isConnected && ConnectedStateChanged != null)
-                {
-                    ConnectedStateChanged(this, new ConnectedStateChangedEventArgs(false));
-                }
+                if (isConnected)
+                    OnConnectionStatusChanged(new ConnectionStatusChangedEventArgs(false));
             }
             // Stop the Reader task
             if (readerTask != null)
@@ -235,6 +230,15 @@ namespace SerialPortLib
             }
             isConnected = false;
         }
+
+        private void HanldeErrorReceived(object sender, SerialErrorReceivedEventArgs e)
+        {
+            logger.Error(e.EventType);
+        }
+
+        #endregion
+
+        #region Background Tasks
 
         private void ReaderTask(CancellationToken readerToken)
         {
@@ -258,8 +262,8 @@ namespace SerialPortLib
                             if (MessageReceived != null)
                             {
                                 // Prevent event listeners from blocking the receiver task
-                                new Thread(() => ReceiveMessage(message)).Start();
-                                //ThreadPool.QueueUserWorkItem(new WaitCallback(ReceiveMessage), message);
+                                new Thread(() => OnMessageReceived(new MessageReceivedEventArgs(message))).Start();
+                                //ThreadPool.QueueUserWorkItem(new WaitCallback(OnMessageReceived), new MessageReceivedEventArgs(message));
                             }
                         }
                         else
@@ -315,41 +319,34 @@ namespace SerialPortLib
             }
         }
 
-        private void ReceiveMessage(object message)
+        #endregion
+
+        #region Events Raising
+
+        /// <summary>
+        /// Raises the connected state changed event.
+        /// </summary>
+        /// <param name="args">Arguments.</param>
+        protected virtual void OnConnectionStatusChanged(ConnectionStatusChangedEventArgs args)
         {
-            if (MessageReceived != null)
-            {
-                MessageReceived((byte[])message);
-            }
+            if (ConnectionStatusChanged != null)
+                ConnectionStatusChanged(this, args);
         }
 
-        private void HanldeErrorReceived(object sender, SerialErrorReceivedEventArgs e)
+        /// <summary>
+        /// Raises the message received event.
+        /// </summary>
+        /// <param name="args">Arguments.</param>
+        protected virtual void OnMessageReceived(MessageReceivedEventArgs args)
         {
-            logger.Error(e.EventType);
+            if (MessageReceived != null)
+                MessageReceived(this, args);
         }
 
         #endregion
 
-    }
+        #endregion
 
-    /// <summary>
-    /// Connected state changed event arguments.
-    /// </summary>
-    public class ConnectedStateChangedEventArgs
-    {
-        /// <summary>
-        /// The connected state.
-        /// </summary>
-        public bool Connected;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SerialPortLib.ConnectedStateChangedEventArgs"/> class.
-        /// </summary>
-        /// <param name="state">State of the connection (true = connected, false = not connected).</param>
-        public ConnectedStateChangedEventArgs(bool state)
-        {
-            Connected = state;
-        }
     }
 
 }

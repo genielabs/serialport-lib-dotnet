@@ -8,14 +8,17 @@ namespace Test.Serial
 {
     class MainClass
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
         private static string defaultPort = "/dev/ttyUSB0";
         private static SerialPortInput serialPort;
 
         public static void Main(string[] args)
         {
+            // NOTE: To disable debug output comment out the following two lines
+            //LogManager.Configuration.LoggingRules.RemoveAt(0);
+            //LogManager.Configuration.Reload();
+
             serialPort = new SerialPortInput();
-            serialPort.ConnectedStateChanged += SerialPort_ConnectedStateChanged;
+            serialPort.ConnectionStatusChanged += SerialPort_ConnectionStatusChanged;
             serialPort.MessageReceived += SerialPort_MessageReceived;
 
             while (true)
@@ -61,16 +64,16 @@ namespace Test.Serial
             }
         }
 
-        static void SerialPort_MessageReceived(byte[] message)
+        static void SerialPort_MessageReceived(object sender, MessageReceivedEventArgs args)
         {
-            logger.Debug(BitConverter.ToString(message));
+            Console.WriteLine("Received message: {0}", BitConverter.ToString(args.Data));
             // On every message received we send an ACK message back to the device
             serialPort.SendMessage(new byte[] { 0x06 });
         }
 
-        static void SerialPort_ConnectedStateChanged(object sender, ConnectedStateChangedEventArgs statusargs)
+        static void SerialPort_ConnectionStatusChanged(object sender, ConnectionStatusChangedEventArgs args)
         {
-            logger.Info("Connected = {0}", statusargs.Connected);
+            Console.WriteLine("Serial port connected status = {0}", args.Connected);
         }
     }
 }

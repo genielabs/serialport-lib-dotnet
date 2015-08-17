@@ -9,6 +9,12 @@
 - Compatible with Mono
 - It overcomes the lack of *DataReceived* event in Mono
 
+## NuGet Package
+
+SerialPortLib  is available as a [NuGet package](https://www.nuget.org/packages/SerialPortLib).
+
+Run `Install-Package SerialPortLib` in the [Package Manager Console](http://docs.nuget.org/docs/start-here/using-the-package-manager-console) or search for “SerialPortLib” in your IDE’s package management plug-in.
+
 ## Example usage
 
     using SerialPortLib;
@@ -16,11 +22,12 @@
     var serialPort = new SerialPortInput();
 
     // Listen to Serial Port events
-    serialPort.ConnectedStateChanged += delegate(object sender, ConnectedStateChangedEventArgs statusargs) {
-        logger.Info("Connected = {0}", statusargs.Connected);
+    serialPort.ConnectionStatusChanged += delegate(object sender, ConnectionStatusChangedEventArgs args) {
+        Console.WriteLine("Connected = {0}", args.Connected);
     };
-    serialPort.MessageReceived += delegate(byte[] message) {
-        logger.Debug(BitConverter.ToString(message));
+    serialPort.MessageReceived += delegate(object sender, MessageReceivedEventArgs args)
+    {
+        Console.WriteLine("Received message: {0}", BitConverter.ToString(args.Data));
     };
 
     // Set port options
