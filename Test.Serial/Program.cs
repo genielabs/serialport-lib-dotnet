@@ -13,7 +13,7 @@ namespace Test.Serial
 
         public static void Main(string[] args)
         {
-            // NOTE: To disable debug output comment out the following two lines
+            // NOTE: To disable debug output uncomment the following two lines
             //LogManager.Configuration.LoggingRules.RemoveAt(0);
             //LogManager.Configuration.Reload();
 
