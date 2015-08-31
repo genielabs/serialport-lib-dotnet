@@ -62,20 +62,20 @@ namespace SerialPortLib
         /// <summary>
         /// Connected state changed event.
         /// </summary>
-        public delegate void ConnectionStatusChangedEvent(object sender, ConnectionStatusChangedEventArgs args);
+        public delegate void ConnectionStatusChangedEventHandler(object sender, ConnectionStatusChangedEventArgs args);
         /// <summary>
         /// Occurs when connected state changed.
         /// </summary>
-        public event ConnectionStatusChangedEvent ConnectionStatusChanged;
+        public event ConnectionStatusChangedEventHandler ConnectionStatusChanged;
 
         /// <summary>
         /// Message received event.
         /// </summary>
-        public delegate void MessageReceivedEvent(object sender, MessageReceivedEventArgs args);
+        public delegate void MessageReceivedEventHandler(object sender, MessageReceivedEventArgs args);
         /// <summary>
         /// Occurs when message received.
         /// </summary>
-        public event MessageReceivedEvent MessageReceived;
+        public event MessageReceivedEventHandler MessageReceived;
 
         #endregion
 
@@ -102,7 +102,14 @@ namespace SerialPortLib
             if (connectionWatcher != null)
             {
                 watcherTokenSource.Cancel();
-                connectionWatcher.Wait(5000);
+                try
+                {
+                    connectionWatcher.Wait(5000);
+                }
+                catch (AggregateException e)
+                {
+                    logger.Error(e);
+                }
                 if (connectionWatcher != null)
                     connectionWatcher.Dispose();
                 connectionWatcher = null;
@@ -224,7 +231,14 @@ namespace SerialPortLib
             if (readerTask != null)
             {
                 readerTokenSource.Cancel();
-                readerTask.Wait(5000);
+                try
+                {
+                    readerTask.Wait(5000);
+                }
+                catch (AggregateException e)
+                {
+                    logger.Error(e);
+                }
                 if (readerTask != null)
                     readerTask.Dispose();
                 readerTask = null;
@@ -260,7 +274,6 @@ namespace SerialPortLib
                             int readbytes = 0;
                             while (serialPort.Read(message, readbytes, msglen - readbytes) <= 0)
                                 ; // noop
-                            logger.Debug(BitConverter.ToString(message));
                             if (MessageReceived != null)
                             {
                                 // Prevent event listeners from blocking the receiver task
@@ -331,6 +344,7 @@ namespace SerialPortLib
         /// <param name="args">Arguments.</param>
         protected virtual void OnConnectionStatusChanged(ConnectionStatusChangedEventArgs args)
         {
+            logger.Debug(args.Connected);
             if (ConnectionStatusChanged != null)
                 ConnectionStatusChanged(this, args);
         }
@@ -341,6 +355,7 @@ namespace SerialPortLib
         /// <param name="args">Arguments.</param>
         protected virtual void OnMessageReceived(MessageReceivedEventArgs args)
         {
+            logger.Debug(BitConverter.ToString(args.Data));
             if (MessageReceived != null)
                 MessageReceived(this, args);
         }
