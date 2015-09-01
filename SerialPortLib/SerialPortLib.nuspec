@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>SerialPortLib</id>
-        <version>1.0.7</version>
+        <version>1.0.8</version>
         <title>SerialPortLib</title>
         <authors>Generoso Martello</authors>
         <owners>G-Labs</owners>
@@ -17,11 +17,11 @@ Features
 - Automatically restabilish connection on error/disconnect
 - It overcomes the lack of *DataReceived* event in Mono</description>
         <summary>Serial Port libray for .Net / Mono</summary>
-        <releaseNotes>Events refactoring.</releaseNotes>
+        <releaseNotes>Fixed issue #1; Updated dependencies.</releaseNotes>
         <copyright>G-Labs</copyright>
         <tags>serial port</tags>
         <dependencies>
-            <dependency id="NLog" version="4.0.1" />
+            <dependency id="NLog" version="4.1.0" />
         </dependencies>
     </metadata>
     <files>

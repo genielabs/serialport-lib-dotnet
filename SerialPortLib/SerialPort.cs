@@ -276,8 +276,9 @@ namespace SerialPortLib
                                 ; // noop
                             if (MessageReceived != null)
                             {
+                                OnMessageReceived(new MessageReceivedEventArgs(message));
                                 // Prevent event listeners from blocking the receiver task
-                                new Thread(() => OnMessageReceived(new MessageReceivedEventArgs(message))).Start();
+                                //new Thread(() => OnMessageReceived(new MessageReceivedEventArgs(message))).Start();
                                 //ThreadPool.QueueUserWorkItem(new WaitCallback(OnMessageReceived), new MessageReceivedEventArgs(message));
                             }
                         }
