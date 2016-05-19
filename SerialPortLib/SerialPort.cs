@@ -135,7 +135,7 @@ namespace SerialPortLib
         /// <param name="portname">Portname.</param>
         /// <param name="baudrate">Baudrate.</param>
         /// <param name="stopbits">Stopbits.</param>
-        /// <param name="parity">Stopbits.</param>
+        /// <param name="parity">Parity.</param>
         public void SetPort(string portname, int baudrate = 115200, StopBits stopbits = StopBits.One, Parity parity = Parity.None)
         {
             if (_portName != portname)
