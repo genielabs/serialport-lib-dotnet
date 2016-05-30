@@ -34,14 +34,16 @@ namespace SerialPortLib
     /// </summary>
     public class SerialPortInput
     {
-        
+
         #region Private Fields
 
         internal static Logger logger = LogManager.GetCurrentClassLogger();
 
-        private SerialPort serialPort;
-        private string portName = "";
-        private int baudRate = 115200;
+        private SerialPort _serialPort;
+        private string _portName = "";
+        private int _baudRate = 115200;
+        private StopBits _stopBits = StopBits.One;
+        private Parity _parity = Parity.None;
 
         // Read/Write error state variable
         private bool gotReadWriteError = true;
@@ -124,7 +126,7 @@ namespace SerialPortLib
         /// <value><c>true</c> if connected; otherwise, <c>false</c>.</value>
         public bool IsConnected
         {
-            get { return serialPort != null && !gotReadWriteError && !disconnectRequested; }
+            get { return _serialPort != null && !gotReadWriteError && !disconnectRequested; }
         }
 
         /// <summary>
@@ -132,16 +134,20 @@ namespace SerialPortLib
         /// </summary>
         /// <param name="portname">Portname.</param>
         /// <param name="baudrate">Baudrate.</param>
-        public void SetPort(string portname, int baudrate = 115200)
+        /// <param name="stopbits">Stopbits.</param>
+        /// <param name="parity">Parity.</param>
+        public void SetPort(string portname, int baudrate = 115200, StopBits stopbits = StopBits.One, Parity parity = Parity.None)
         {
-            if (portName != portname)
+            if (_portName != portname)
             {
-                // set to erro so that the connection watcher will reconnect
+                // set to error so that the connection watcher will reconnect
                 // using the new port
                 gotReadWriteError = true;
             }
-            portName = portname;
-            baudRate = baudrate;
+            _portName = portname;
+            _baudRate = baudrate;
+            _stopBits = stopbits;
+            _parity = parity;
         }
 
         /// <summary>
@@ -156,7 +162,7 @@ namespace SerialPortLib
             {
                 try
                 {
-                    serialPort.Write(message, 0, message.Length);
+                    _serialPort.Write(message, 0, message.Length);
                     success = true;
                     logger.Debug(BitConverter.ToString(message));
                 }
@@ -185,26 +191,29 @@ namespace SerialPortLib
                     bool tryOpen = true;
                     if (Environment.OSVersion.Platform.ToString().StartsWith("Win") == false)
                     {
-                        tryOpen = (tryOpen && System.IO.File.Exists(portName));
+                        tryOpen = (tryOpen && System.IO.File.Exists(_portName));
                     }
                     if (tryOpen)
                     {
-                        serialPort = new SerialPort();
-                        serialPort.ErrorReceived += HanldeErrorReceived;
-                        serialPort.PortName = portName;
-                        serialPort.BaudRate = baudRate;
+                        _serialPort = new SerialPort();
+                        _serialPort.ErrorReceived += HandleErrorReceived;
+                        _serialPort.PortName = _portName;
+                        _serialPort.BaudRate = _baudRate;
+                        _serialPort.StopBits = _stopBits;
+                        _serialPort.Parity = _parity;
+
                         // We are not using serialPort.DataReceived event for receiving data since this is not working under Linux/Mono.
                         // We use the readerTask instead (see below).
-                        serialPort.Open();
+                        _serialPort.Open();
                         success = true;
                     }
                 }
                 catch (Exception e)
-                { 
+                {
                     logger.Error(e);
                     Close();
                 }
-                if (serialPort != null && serialPort.IsOpen)
+                if (_serialPort != null && _serialPort.IsOpen)
                 {
                     gotReadWriteError = false;
                     // Start the Reader task
@@ -227,22 +236,22 @@ namespace SerialPortLib
                         reader.Abort();
                     reader = null;
                 }
-                if (serialPort != null)
+                if (_serialPort != null)
                 {
-                    serialPort.ErrorReceived -= HanldeErrorReceived;
-                    if (serialPort.IsOpen)
+                    _serialPort.ErrorReceived -= HandleErrorReceived;
+                    if (_serialPort.IsOpen)
                     {
-                        serialPort.Close();
+                        _serialPort.Close();
                         OnConnectionStatusChanged(new ConnectionStatusChangedEventArgs(false));
                     }
-                    serialPort.Dispose();
-                    serialPort = null;
+                    _serialPort.Dispose();
+                    _serialPort = null;
                 }
                 gotReadWriteError = true;
             }
         }
 
-        private void HanldeErrorReceived(object sender, SerialErrorReceivedEventArgs e)
+        private void HandleErrorReceived(object sender, SerialErrorReceivedEventArgs e)
         {
             logger.Error(e.EventType);
         }
@@ -259,13 +268,13 @@ namespace SerialPortLib
                 //
                 try
                 {
-                    msglen = serialPort.BytesToRead;
+                    msglen = _serialPort.BytesToRead;
                     if (msglen > 0)
                     {
                         byte[] message = new byte[msglen];
                         //
                         int readbytes = 0;
-                        while (serialPort.Read(message, readbytes, msglen - readbytes) <= 0)
+                        while (_serialPort.Read(message, readbytes, msglen - readbytes) <= 0)
                             ; // noop
                         if (MessageReceived != null)
                         {
@@ -306,7 +315,7 @@ namespace SerialPortLib
                                 Open();
                             }
                             catch (Exception e)
-                            { 
+                            {
                                 logger.Error(e);
                             }
                         }
