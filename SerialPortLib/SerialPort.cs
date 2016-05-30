@@ -93,7 +93,7 @@ namespace SerialPortLib
             {
                 Disconnect();
                 Open();
-                connectionWatcher = new Thread(new ThreadStart(ConnectionWatcherTask));
+                connectionWatcher = new Thread(ConnectionWatcherTask);
                 connectionWatcher.Start();
             }
             return IsConnected;
