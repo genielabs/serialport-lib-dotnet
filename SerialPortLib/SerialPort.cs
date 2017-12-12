@@ -26,6 +26,7 @@ using System.IO.Ports;
 using System.Threading;
 
 using NLog;
+using System.IO;
 
 namespace SerialPortLib
 {
@@ -56,6 +57,9 @@ namespace SerialPortLib
         private object accessLock = new object();
         private bool disconnectRequested = false;
 
+        byte[] buffer = new byte[2048];
+        Action kickoffRead = null;
+
         #endregion
 
         #region Public Events
@@ -85,6 +89,38 @@ namespace SerialPortLib
         /// <summary>
         /// Connect to the serial port.
         /// </summary>
+        public SerialPortInput()
+        {
+            kickoffRead = delegate
+            {
+                if (!IsConnected)
+                {
+                    return;
+                }
+
+                _serialPort.BaseStream.BeginRead(buffer, 0, buffer.Length, delegate (IAsyncResult ar)
+                {
+                    if (IsConnected)
+                    {
+                        try
+                        {
+                            int actualLength = _serialPort.BaseStream.EndRead(ar);
+                            byte[] received = new byte[actualLength];
+                            Buffer.BlockCopy(buffer, 0, received, 0, actualLength);
+                            OnMessageReceived(new MessageReceivedEventArgs(received));
+                        }
+                        catch (IOException exc)
+                        {
+                            logger.Error(exc);
+                            gotReadWriteError = true;
+                            Thread.Sleep(1000);
+                        }
+                        kickoffRead();
+                    }
+                }, null);
+            };
+        }
+
         public bool Connect()
         {
             if (disconnectRequested)
@@ -262,36 +298,9 @@ namespace SerialPortLib
 
         private void ReaderTask()
         {
-            while (IsConnected)
+            if (IsConnected)
             {
-                int msglen = 0;
-                //
-                try
-                {
-                    msglen = _serialPort.BytesToRead;
-                    if (msglen > 0)
-                    {
-                        byte[] message = new byte[msglen];
-                        //
-                        int readbytes = 0;
-                        while (_serialPort.Read(message, readbytes, msglen - readbytes) <= 0)
-                            ; // noop
-                        if (MessageReceived != null)
-                        {
-                            OnMessageReceived(new MessageReceivedEventArgs(message));
-                        }
-                    }
-                    else
-                    {
-                        Thread.Sleep(100);
-                    }
-                }
-                catch (Exception e)
-                {
-                    logger.Error(e);
-                    gotReadWriteError = true;
-                    Thread.Sleep(1000);
-                }
+                kickoffRead();
             }
         }
 
