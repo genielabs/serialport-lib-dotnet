@@ -21,7 +21,7 @@ Features
         <copyright>G-Labs</copyright>
         <tags>serial port</tags>
         <dependencies>
-            <dependency id="NLog" version="4.1.0" />
+            <dependency id="NLog" version="4.5.7" />
         </dependencies>
     </metadata>
     <files>

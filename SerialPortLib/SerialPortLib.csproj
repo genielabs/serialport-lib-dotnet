@@ -33,7 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.1.0\lib\net40\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.5.7\lib\net40-client\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
