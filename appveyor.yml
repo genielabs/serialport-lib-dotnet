@@ -14,7 +14,7 @@ deploy:
       secure:  1aMBEFi1qBAoV4H+LYx7hoVLgXJfndGoQ8I8qjLsoxXNA1zS+zgQHi2zVlRrmw1v
     draft: false
     prerelease: false    
-    artifact: .\SerialPortLib\bin\Release\SerialPortLib.dll
+    artifact: .\SerialPortLib\bin\Debug\SerialPortLib.dll
     on:
       appveyor_repo_tag: true
   - provider: NuGet
