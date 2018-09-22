@@ -9,5 +9,5 @@ $content = $content -replace '\$version\$',$versionStr
 
 $content | Out-File $root\SerialPortLib\SerialPortLib.compiled.nuspec
 
-& $root\NuGet\NuGet.exe pack $root\SerialPortLib\SerialPortLib.compiled.nuspec
+& nuget pack $root\SerialPortLib\SerialPortLib.compiled.nuspec
 
