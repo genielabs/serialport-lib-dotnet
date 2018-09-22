@@ -12,7 +12,7 @@ artifacts:
   - path: .\SerialPortLib\bin\Debug\SerialPortLib.dll
     name: SerialPortLib
     type: File
-  - path: '*.nuget'
+  - path: '*.nupkg'
     name: SerialPortLib nupkg
     type: NuGetPackage
 deploy:
@@ -21,7 +21,9 @@ deploy:
       secure:  1aMBEFi1qBAoV4H+LYx7hoVLgXJfndGoQ8I8qjLsoxXNA1zS+zgQHi2zVlRrmw1v
     draft: false
     prerelease: false    
-    artifact: .\SerialPortLib\bin\Debug\SerialPortLib.dll
+    artifact: 
+        - SerialPortLib.dll
+        - '*.nupkg'
     on:
       appveyor_repo_tag: true
   - provider: NuGet
