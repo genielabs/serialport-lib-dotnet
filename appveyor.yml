@@ -7,13 +7,14 @@ build:
   project: .\SerialPortLib.sln
   verbosity: minimal
 after_test:
+  - ps: .\SerialPortLib\nuget_pack.ps1
 deploy:
   - provider: GitHub
     auth_token:
       secure:  1aMBEFi1qBAoV4H+LYx7hoVLgXJfndGoQ8I8qjLsoxXNA1zS+zgQHi2zVlRrmw1v
     draft: false
     prerelease: false    
-    artifact: /bin/Release/SerialPortLib.dll
+    artifact: .\SerialPortLib\bin\Release\SerialPortLib.dll
     on:
       appveyor_repo_tag: true
   - provider: NuGet
