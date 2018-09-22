@@ -1,13 +1,16 @@
 $root = (split-path -parent $MyInvocation.MyCommand.Definition) + '\..'
-$version = [System.Reflection.Assembly]::LoadFile("$root\SerialPortLib\bin\Debug\SerialPortLib.dll").GetName().Version
-$versionStr = "{0}.{1}.{2}" -f ($version.Major, $version.Minor, $env:APPVEYOR_BUILD_NUMBER)
+#$version = [System.Reflection.Assembly]::LoadFile("$root\SerialPortLib\bin\Debug\SerialPortLib.dll").GetName().Version
 
-Write-Host "Setting .nuspec version tag to $versionStr"
+$versionStr = "{0}" -f ($env:APPVEYOR_REPO_TAG_NAME)
 
-$content = (Get-Content $root\SerialPortLib\SerialPortLib.nuspec) 
-$content = $content -replace '\$version\$',$versionStr
+if (-not ([string]::IsNullOrEmpty($versionStr))) {
+  Write-Host "Setting .nuspec version tag to $versionStr"
 
-$content | Out-File $root\SerialPortLib\SerialPortLib.compiled.nuspec
+  $content = (Get-Content $root\SerialPortLib\SerialPortLib.nuspec) 
+  $content = $content -replace '\$version\$',$versionStr
 
-& nuget pack $root\SerialPortLib\SerialPortLib.compiled.nuspec
+  $content | Out-File $root\SerialPortLib\SerialPortLib.compiled.nuspec
+
+  & nuget pack $root\SerialPortLib\SerialPortLib.compiled.nuspec
+}
 
