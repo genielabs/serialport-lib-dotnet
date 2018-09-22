@@ -26,7 +26,6 @@ Features
     </metadata>
     <files>
         <file src="bin\Debug\SerialPortLib.dll" target="lib\SerialPortLib.dll" />
-        <file src="bin\Debug\SerialPortLib.dll.mdb" target="lib\SerialPortLib.dll.mdb" />
         <file src="bin\Debug\SerialPortLib.xml" target="lib\SerialPortLib.xml" />
     </files>
 </package>
