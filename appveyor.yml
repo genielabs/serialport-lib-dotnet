@@ -8,6 +8,13 @@ build:
   verbosity: minimal
 after_test:
   - ps: .\SerialPortLib\nuget_pack.ps1
+artifacts:
+  - path: .\SerialPortLib\bin\Debug\SerialPortLib.dll
+    name: SerialPortLib
+    type: File
+  - path: '*.nuget'
+    name: SerialPortLib nupkg
+    type: NuGetPackage
 deploy:
   - provider: GitHub
     auth_token:
