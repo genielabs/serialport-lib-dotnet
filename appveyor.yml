@@ -1,6 +1,8 @@
 version: 1.0.{build}-stable
 image: Visual Studio 2015
 configuration: Release
+before_build:
+  - nuget restore
 build:
   project: .\SerialPortLib.sln
   verbosity: minimal
