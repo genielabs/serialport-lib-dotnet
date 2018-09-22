@@ -1,4 +1,4 @@
-﻿# Serial Port libray for .Net
+# Serial Port library for .Net
 
 ## Features
 

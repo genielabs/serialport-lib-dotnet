@@ -6,8 +6,6 @@ build:
   verbosity: minimal
 after_test:
 deploy:
-  release: $(APPVEYOR_REPO_TAG_NAME)
-  description: 'SerialPortLib $(APPVEYOR_REPO_TAG_NAME)'
   - provider: GitHub
     auth_token:
       secure:  1aMBEFi1qBAoV4H+LYx7hoVLgXJfndGoQ8I8qjLsoxXNA1zS+zgQHi2zVlRrmw1v
