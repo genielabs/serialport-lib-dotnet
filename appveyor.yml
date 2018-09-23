@@ -6,6 +6,10 @@ before_build:
 build:
   project: .\SerialPortLib.sln
   verbosity: minimal
+test:
+  assemblies:
+    only:
+      - SerialPortLib.Tests/bin/Debug/SerialPortLib.Tests.dll
 after_test:
   - ps: .\SerialPortLib\nuget_pack.ps1
 artifacts:

@@ -9,7 +9,7 @@
 Thumbs.db
 *.suo
 *.userprefs
-packages/NLog*
+packages
 .idea
 .riderModule.iml
 

@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerialPortLib", "SerialPort
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Serial", "Test.Serial\Test.Serial.csproj", "{20805410-4DCA-45E4-BBBA-0F3BA5734B8D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerialPortLib.Tests", "SerialPortLib.Tests\SerialPortLib.Tests.csproj", "{7D5C40F9-8056-427E-9E06-13A161B00FB3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{8118C0B9-3B16-47AA-8B24-E5B15F429F78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8118C0B9-3B16-47AA-8B24-E5B15F429F78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8118C0B9-3B16-47AA-8B24-E5B15F429F78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D5C40F9-8056-427E-9E06-13A161B00FB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D5C40F9-8056-427E-9E06-13A161B00FB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D5C40F9-8056-427E-9E06-13A161B00FB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D5C40F9-8056-427E-9E06-13A161B00FB3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

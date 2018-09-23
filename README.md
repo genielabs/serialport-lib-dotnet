@@ -50,4 +50,5 @@ serialPort.SendMessage(message);
 
 ## License
 
-SerialPortLib is open source software, licensed under the terms of GNU GPLV3 license. See the [LICENSE](LICENSE) file for details.
+SerialPortLib is open source software, licensed under the terms of Apache License 2.0. See the [LICENSE](LICENSE) file for details.
+
