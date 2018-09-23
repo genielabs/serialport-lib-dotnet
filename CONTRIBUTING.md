@@ -37,11 +37,11 @@ This project follows *Microsoft .Net* [coding conventions](https://docs.microsof
 
 To release a new version push a new tag using the format:
 
-`<major>.<minor>.<build>[-{stable|rc|beta|alpha}]`
+`<major>.<minor>.<build>`
 
-example: `v1.0.16`
+examples: `1.0.16`, `1.0.20-pre1`
 
-When a new tag is submitted the CI system will build the project, run tests and package assets (.dll and .nupkg distribution files). The NuGet package will be automatically published and assets will be also uploaded to the new release on GitHub repository.
+When a new tag is submitted the CI system will build the project, run tests and package assets (.dll and .nupkg distribution files). The NuGet package will be automatically published and assets will be also uploaded to the new release tag on GitHub repository.
 
 #### Join SerialPortLib team!
 
