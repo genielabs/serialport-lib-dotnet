@@ -1,5 +1,6 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/r9fcyt98fjmygwu6?svg=true)](https://ci.appveyor.com/project/genemars/serialport-lib-dotnet)
 [![NuGet](https://img.shields.io/nuget/v/SerialPortLib.svg)](https://www.nuget.org/packages/SerialPortLib/)
+![License](https://img.shields.io/github/license/genielabs/serialport-lib-dotnet.svg)
 
 # Serial Port library for .Net
 
