@@ -30,6 +30,15 @@ using NLog;
 
 namespace SerialPortLib
 {
+
+    public enum DataBits
+    {
+        Five = 5,
+        Six,
+        Seven,
+        Eight,
+    }
+
     /// <summary>
     /// Serial port I/O
     /// </summary>
@@ -45,7 +54,7 @@ namespace SerialPortLib
         private int _baudRate = 115200;
         private StopBits _stopBits = StopBits.One;
         private Parity _parity = Parity.None;
-        private int _dataBits = 8;
+        private DataBits _dataBits = DataBits.Eight;
 
         // Read/Write error state variable
         private bool gotReadWriteError = true;
@@ -134,27 +143,24 @@ namespace SerialPortLib
         /// <summary>
         /// Sets the serial port options.
         /// </summary>
-        /// <param name="portname">Portname.</param>
-        /// <param name="baudrate">Baudrate.</param>
-        /// <param name="stopbits">Stopbits.</param>
+        /// <param name="portName">Portname.</param>
+        /// <param name="baudRate">Baudrate.</param>
+        /// <param name="stopBits">Stopbits.</param>
         /// <param name="parity">Parity.</param>
-        /// <param name="databits">Databits.</param>
-        public void SetPort(string portname, int baudrate = 115200, StopBits stopbits = StopBits.One, Parity parity = Parity.None, int databits = 8)
+        /// <param name="dataBits">Databits.</param>
+        public void SetPort(string portName, int baudRate = 115200, StopBits stopBits = StopBits.One, Parity parity = Parity.None, DataBits dataBits = DataBits.Eight)
         {
-            if (_portName != portname)
+            if (_portName != portName)
             {
                 // set to error so that the connection watcher will reconnect
                 // using the new port
                 gotReadWriteError = true;
             }
-            _portName = portname;
-            _baudRate = baudrate;
-            _stopBits = stopbits;
+            _portName = portName;
+            _baudRate = baudRate;
+            _stopBits = stopBits;
             _parity = parity;
-
-            if (5 <= databits && databits <= 8) {
-                _dataBits = databits;
-            }
+            _dataBits = dataBits;
         }
 
         /// <summary>
@@ -208,7 +214,7 @@ namespace SerialPortLib
                         _serialPort.BaudRate = _baudRate;
                         _serialPort.StopBits = _stopBits;
                         _serialPort.Parity = _parity;
-                        _serialPort.DataBits = _dataBits;
+                        _serialPort.DataBits = (int)_dataBits;
 
                         // We are not using serialPort.DataReceived event for receiving data since this is not working under Linux/Mono.
                         // We use the readerTask instead (see below).
