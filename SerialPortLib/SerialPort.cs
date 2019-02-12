@@ -45,6 +45,7 @@ namespace SerialPortLib
         private int _baudRate = 115200;
         private StopBits _stopBits = StopBits.One;
         private Parity _parity = Parity.None;
+        private int _dataBits = 8;
 
         // Read/Write error state variable
         private bool gotReadWriteError = true;
@@ -137,7 +138,8 @@ namespace SerialPortLib
         /// <param name="baudrate">Baudrate.</param>
         /// <param name="stopbits">Stopbits.</param>
         /// <param name="parity">Parity.</param>
-        public void SetPort(string portname, int baudrate = 115200, StopBits stopbits = StopBits.One, Parity parity = Parity.None)
+        /// <param name="databits">Databits.</param>
+        public void SetPort(string portname, int baudrate = 115200, StopBits stopbits = StopBits.One, Parity parity = Parity.None, int databits = 8)
         {
             if (_portName != portname)
             {
@@ -149,6 +151,10 @@ namespace SerialPortLib
             _baudRate = baudrate;
             _stopBits = stopbits;
             _parity = parity;
+
+            if (5 <= databits && databits <= 8) {
+                _dataBits = databits;
+            }
         }
 
         /// <summary>
@@ -202,6 +208,7 @@ namespace SerialPortLib
                         _serialPort.BaudRate = _baudRate;
                         _serialPort.StopBits = _stopBits;
                         _serialPort.Parity = _parity;
+                        _serialPort.DataBits = _dataBits;
 
                         // We are not using serialPort.DataReceived event for receiving data since this is not working under Linux/Mono.
                         // We use the readerTask instead (see below).
