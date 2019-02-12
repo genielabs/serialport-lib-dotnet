@@ -31,6 +31,9 @@ using NLog;
 namespace SerialPortLib
 {
 
+    /// <summary>
+    /// DataBits enum.
+    /// </summary>
     public enum DataBits
     {
         Five = 5,
