@@ -53,3 +53,8 @@ serialPort.SendMessage(message);
 
 SerialPortLib is open source software, licensed under the terms of Apache License 2.0. See the [LICENSE](LICENSE) file for details.
 
+
+## Who's using this library?
+
+- [HomeGenie Server](http://github.com/genielabs/HomeGenie): smart home automation server
+- [ZWaveLib](https://github.com/genielabs/zwave-lib-dotnet): z-wave home automation library for .net/mono
