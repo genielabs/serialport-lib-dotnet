@@ -21,11 +21,21 @@ Features
         <copyright>G-Labs</copyright>
         <tags>serial port</tags>
         <dependencies>
-            <dependency id="NLog" version="4.5.10" />
+            <group targetFramework="net40">
+                <dependency id="NLog" version="4.5.10" />
+            </group>
+
+            <group targetFramework="net461">
+                <dependency id="NLog" version="4.5.10" />
+            </group>
+
+            <group targetFramework="netstandard2.0">
+                <dependency id="Microsoft.Extensions.Logging.Abstractions" version="2.2.0" />
+                <dependency id="SerialPortStream" version="2.2.0" />
+            </group>
         </dependencies>
     </metadata>
     <files>
-        <file src="bin\Debug\SerialPortLib.dll" target="lib\SerialPortLib.dll" />
-        <file src="bin\Debug\SerialPortLib.xml" target="lib\SerialPortLib.xml" />
+        <file src="bin\Debug\**" target="lib" />
     </files>
 </package>
