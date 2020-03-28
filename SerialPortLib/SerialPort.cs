@@ -22,11 +22,18 @@
  */
 
 using System;
-using System.Diagnostics;
-using System.IO.Ports;
 using System.Threading;
 
+#if NET40 || NET461
 using NLog;
+using System.IO.Ports;
+#endif
+
+#if NETSTANDARD2_0
+using Microsoft.Extensions.Logging;
+using System.Runtime.InteropServices;
+using RJCP.IO.Ports;
+#endif
 
 namespace SerialPortLib
 {
@@ -62,9 +69,17 @@ namespace SerialPortLib
 
         #region Private Fields
 
+#if NET40 || NET461
         internal static Logger logger = LogManager.GetCurrentClassLogger();
-
+#else
+        private readonly ILogger<SerialPortInput> _logger;
+#endif
+#if NETSTANDARD2_0
+        private SerialPortStream _serialPort;
+#else
         private SerialPort _serialPort;
+#endif
+
         private string _portName = "";
         private int _baudRate = 115200;
         private StopBits _stopBits = StopBits.One;
@@ -76,8 +91,10 @@ namespace SerialPortLib
 
         // Serial port reader task
         private Thread reader;
+        private CancellationTokenSource readerCts;
         // Serial port connection watcher
         private Thread connectionWatcher;
+        private CancellationTokenSource connectionWatcherCts;
 
         private object accessLock = new object();
         private bool disconnectRequested = false;
@@ -90,6 +107,7 @@ namespace SerialPortLib
         /// Connected state changed event.
         /// </summary>
         public delegate void ConnectionStatusChangedEventHandler(object sender, ConnectionStatusChangedEventArgs args);
+
         /// <summary>
         /// Occurs when connected state changed.
         /// </summary>
@@ -99,6 +117,7 @@ namespace SerialPortLib
         /// Message received event.
         /// </summary>
         public delegate void MessageReceivedEventHandler(object sender, MessageReceivedEventArgs args);
+
         /// <summary>
         /// Occurs when message received.
         /// </summary>
@@ -107,6 +126,23 @@ namespace SerialPortLib
         #endregion
 
         #region Public Members
+
+#if NET40 || NET461
+        public SerialPortInput()
+        {
+            connectionWatcherCts = new CancellationTokenSource();
+            readerCts = new CancellationTokenSource();
+        }
+#endif
+
+#if NETSTANDARD2_0
+        public SerialPortInput(ILogger<SerialPortInput> logger)
+        {
+            _logger = logger;
+            connectionWatcherCts = new CancellationTokenSource();
+            readerCts = new CancellationTokenSource();
+        }
+#endif
 
         /// <summary>
         /// Connect to the serial port.
@@ -119,8 +155,9 @@ namespace SerialPortLib
             {
                 Disconnect();
                 Open();
+                connectionWatcherCts = new CancellationTokenSource();
                 connectionWatcher = new Thread(ConnectionWatcherTask);
-                connectionWatcher.Start();
+                connectionWatcher.Start(connectionWatcherCts.Token);
             }
             return IsConnected;
         }
@@ -139,7 +176,7 @@ namespace SerialPortLib
                 if (connectionWatcher != null)
                 {
                     if (!connectionWatcher.Join(5000))
-                        connectionWatcher.Abort();
+                        connectionWatcherCts.Cancel();
                     connectionWatcher = null;
                 }
                 disconnectRequested = false;
@@ -192,11 +229,11 @@ namespace SerialPortLib
                 {
                     _serialPort.Write(message, 0, message.Length);
                     success = true;
-                    logger.Debug(BitConverter.ToString(message));
+                    LogDebug(BitConverter.ToString(message));
                 }
                 catch (Exception e)
                 {
-                    logger.Error(e);
+                    LogError(e);
                 }
             }
             return success;
@@ -217,13 +254,23 @@ namespace SerialPortLib
                 try
                 {
                     bool tryOpen = true;
-                    if (Environment.OSVersion.Platform.ToString().StartsWith("Win") == false)
+
+#if NETSTANDARD2_0
+                    var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+#else
+                    var isWindows = Environment.OSVersion.Platform.ToString().StartsWith("Win");
+#endif
+                    if (!isWindows)
                     {
                         tryOpen = (tryOpen && System.IO.File.Exists(_portName));
                     }
                     if (tryOpen)
                     {
+#if NETSTANDARD2_0
+                        _serialPort = new SerialPortStream();
+#else
                         _serialPort = new SerialPort();
+#endif
                         _serialPort.ErrorReceived += HandleErrorReceived;
                         _serialPort.PortName = _portName;
                         _serialPort.BaudRate = _baudRate;
@@ -239,15 +286,16 @@ namespace SerialPortLib
                 }
                 catch (Exception e)
                 {
-                    logger.Error(e);
+                    LogError(e);
                     Close();
                 }
                 if (_serialPort != null && _serialPort.IsOpen)
                 {
                     gotReadWriteError = false;
                     // Start the Reader task
+                    readerCts = new CancellationTokenSource();
                     reader = new Thread(ReaderTask);
-                    reader.Start();
+                    reader.Start(readerCts.Token);
                     OnConnectionStatusChanged(new ConnectionStatusChangedEventArgs(true));
                 }
             }
@@ -262,7 +310,7 @@ namespace SerialPortLib
                 if (reader != null)
                 {
                     if (!reader.Join(5000))
-                        reader.Abort();
+                        readerCts.Cancel();
                     reader = null;
                 }
                 if (_serialPort != null)
@@ -282,16 +330,17 @@ namespace SerialPortLib
 
         private void HandleErrorReceived(object sender, SerialErrorReceivedEventArgs e)
         {
-            logger.Error(e.EventType);
+            LogError(e.EventType);
         }
 
         #endregion
 
         #region Background Tasks
 
-        private void ReaderTask()
+        private void ReaderTask(object data)
         {
-            while (IsConnected)
+            var ct = (CancellationToken) data;
+            while (IsConnected && !ct.IsCancellationRequested)
             {
                 int msglen = 0;
                 //
@@ -317,18 +366,19 @@ namespace SerialPortLib
                 }
                 catch (Exception e)
                 {
-                    logger.Error(e);
+                    LogError(e);
                     gotReadWriteError = true;
                     Thread.Sleep(1000);
                 }
             }
         }
 
-        private void ConnectionWatcherTask()
+        private void ConnectionWatcherTask(object data)
         {
+            var ct = (CancellationToken) data;
             // This task takes care of automatically reconnecting the interface
             // when the connection is drop or if an I/O error occurs
-            while (!disconnectRequested)
+            while (!disconnectRequested && !ct.IsCancellationRequested)
             {
                 if (gotReadWriteError)
                 {
@@ -345,18 +395,45 @@ namespace SerialPortLib
                             }
                             catch (Exception e)
                             {
-                                logger.Error(e);
+                                LogError(e);
                             }
                         }
                     }
                     catch (Exception e)
                     {
-                        logger.Error(e);
+                        LogError(e);
                     }
                 }
                 if (!disconnectRequested)
                     Thread.Sleep(1000);
             }
+        }
+
+        private void LogDebug(string message)
+        {
+#if NET40 || NET461
+            logger.Debug(message);
+#else
+            _logger.LogDebug(message);
+#endif
+        }
+
+        private void LogError(Exception ex)
+        {
+#if NET40 || NET461
+            logger.Error(ex);
+#else
+            _logger.LogError(ex, null);
+#endif
+        }
+
+        private void LogError(SerialError error)
+        {
+#if NET40 || NET461
+            logger.Error("SerialPort ErrorReceived: {0}", error);
+#else
+            _logger.LogError("SerialPort ErrorReceived: {0}", error);
+#endif
         }
 
         #endregion
@@ -369,7 +446,7 @@ namespace SerialPortLib
         /// <param name="args">Arguments.</param>
         protected virtual void OnConnectionStatusChanged(ConnectionStatusChangedEventArgs args)
         {
-            logger.Debug(args.Connected);
+            LogDebug(args.Connected.ToString());
             if (ConnectionStatusChanged != null)
                 ConnectionStatusChanged(this, args);
         }
@@ -380,7 +457,7 @@ namespace SerialPortLib
         /// <param name="args">Arguments.</param>
         protected virtual void OnMessageReceived(MessageReceivedEventArgs args)
         {
-            logger.Debug(BitConverter.ToString(args.Data));
+            LogDebug(BitConverter.ToString(args.Data));
             if (MessageReceived != null)
                 MessageReceived(this, args);
         }

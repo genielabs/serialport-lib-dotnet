@@ -14,4 +14,6 @@ if (-not ([string]::IsNullOrEmpty($versionStr))) {
 
   & nuget pack $root\$project\$project.compiled.nuspec
 }
-
+else {
+  Write-Host "Version string is empty, possibly dry run or APPVEYOR_REPO_TAG_NAME environment variable is not set"
+}
