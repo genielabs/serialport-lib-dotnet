@@ -202,17 +202,22 @@ namespace SerialPortLib
         /// <param name="dataBits">Databits.</param>
         public void SetPort(string portName, int baudRate = 115200, StopBits stopBits = StopBits.One, Parity parity = Parity.None, DataBits dataBits = DataBits.Eight)
         {
-            if (_portName != portName)
+            if (_portName != portName || _baudRate != baudRate || stopBits != _stopBits || parity != _parity || dataBits != _dataBits)
             {
-                // set to error so that the connection watcher will reconnect
-                // using the new port
-                gotReadWriteError = true;
+                // Change Parameters request
+                // Take into account immediately the new connection parameters
+                // (do not use the ConnectionWatcher, otherwise strange things will occurs !)
+                _portName = portName;
+                _baudRate = baudRate;
+                _stopBits = stopBits;
+                _parity = parity;
+                _dataBits = dataBits;
+                if (IsConnected)
+                {
+                    Connect();      // Take into account immediately the new connection parameters
+                }
+                LogDebug(string.Format("Port parameters changed (port name {0} / baudrate {1} / stopbits {2} / parity {3} / databits {4})", portName, baudRate, stopBits, parity, dataBits));
             }
-            _portName = portName;
-            _baudRate = baudRate;
-            _stopBits = stopBits;
-            _parity = parity;
-            _dataBits = dataBits;
         }
 
         /// <summary>
