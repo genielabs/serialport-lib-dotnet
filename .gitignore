@@ -16,3 +16,7 @@ Thumbs.db
 *.userprefs
 .idea
 .riderModule.iml
+/.vs/SerialPortLib/DesignTimeBuild/.dtbcache.v2
+/.vs/ProjectSettings.json
+/.vs/VSWorkspaceState.json
+/.vs/slnx.sqlite
