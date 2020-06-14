@@ -23,7 +23,7 @@ Run `Install-Package SerialPortLib` in the [Package Manager Console](http://docs
 
 When running under Linux you might encouter the following error:
 ```
-A fatal error was encountered. The library 'libhostpolicy.so' required to execute the application was not found 
+Unable to load shared library 'libnserial.so.1' or one of its dependencies.
 ```
 in which case `serialportstream` library is missing.
 
