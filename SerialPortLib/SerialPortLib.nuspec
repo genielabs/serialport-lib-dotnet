@@ -30,8 +30,8 @@ Features
             </group>
 
             <group targetFramework="netstandard2.0">
-                <dependency id="Microsoft.Extensions.Logging.Abstractions" version="2.2.0" />
-                <dependency id="SerialPortStream" version="2.2.0" />
+                <dependency id="Microsoft.Extensions.Logging.Abstractions" version="3.0.0" />
+                <dependency id="SerialPortStream" version="2.2.1.1" />
                 <dependency id="NetCoreSerial" version="1.3.2" />
             </group>
         </dependencies>
