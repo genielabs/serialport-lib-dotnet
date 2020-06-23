@@ -37,6 +37,6 @@ Features
         </dependencies>
     </metadata>
     <files>
-        <file src="bin\Debug\**" target="lib" />
+        <file src="bin\Debug\**\SerialPortLib.*" target="lib" />
     </files>
 </package>
