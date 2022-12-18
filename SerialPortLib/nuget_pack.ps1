@@ -8,7 +8,7 @@ if (-not ([string]::IsNullOrEmpty($versionStr))) {
   Write-Host "Setting $project .csproj version tag to $versionStr"
 
   $content = (Get-Content $root\$project\$project.csproj) 
-  $content = $content -replace '<Version>(.*)</Version>',$versionStr
+  $content = $content -replace '(?<=\<Version\>).*?(?=\</Version\>)',$versionStr
 
   $content | Out-File $root\$project\$project.csproj
 
