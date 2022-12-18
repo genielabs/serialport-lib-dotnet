@@ -1,5 +1,5 @@
-version: 1.0.{build}
-image: Visual Studio 2017
+version: 1.1.{build}
+image: Visual Studio 2022
 configuration: Debug
 before_build:
   - nuget restore
@@ -31,4 +31,3 @@ deploy:
     artifact: /.*\.nupkg/
     on:
       appveyor_repo_tag: true
-

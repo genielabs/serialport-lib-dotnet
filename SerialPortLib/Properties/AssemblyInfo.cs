@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set di attributi. Per modificare le informazioni associate a un assembly
 // occorre quindi modificare i valori di questi attributi.
 [assembly: AssemblyTitle("SerialPortLib")]
-[assembly: AssemblyDescription("Serial Port libray for .Net / Mono")]
+//[assembly: AssemblyDescription("Serial Port libray for .Net")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("G-Labs")]
 [assembly: AssemblyProduct("SerialPortLib")]
-[assembly: AssemblyCopyright("Copyright ©  2013-2020")]
+[assembly: AssemblyCopyright("Copyright ©  2013-2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

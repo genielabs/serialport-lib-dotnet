@@ -19,28 +19,6 @@ SerialPortLib  is available as a [NuGet package](https://www.nuget.org/packages/
 
 Run `Install-Package SerialPortLib` in the [Package Manager Console](http://docs.nuget.org/docs/start-here/using-the-package-manager-console) or search for “SerialPortLib” in your IDE’s package management plug-in.
 
-## .Net Standard 2.0 notes
-
-When running under Linux you might encouter the following error:
-```
-Unable to load shared library 'libnserial.so.1' or one of its dependencies.
-```
-in which case `serialportstream` library is missing.
-
-To fix this error clone and build `serialportstream`:
-```
-git clone https://github.com/jcurl/serialportstream.git
-cd serialportstream/
-cd dll/serialunix/
-./build.sh
-```
-
-Then copy generated files `build/libnserial/libnserial.so*` to the app folder and lauch the app with `LD_LIBRARY_PATH` set to the current directory:
-
-```
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:. dotnet exec TestApp.NetCore.dll
-```
-
 ## Example usage
 
 ```csharp

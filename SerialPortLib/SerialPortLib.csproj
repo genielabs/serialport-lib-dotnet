@@ -1,29 +1,32 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <!-- This project will output netstandard2.0 and net461 assemblies -->
-    <TargetFrameworks>netstandard2.0;net40;net461</TargetFrameworks>
-    <NetStandardImplicitPackageVersion>2.0.0</NetStandardImplicitPackageVersion>
+    <PackageId>SerialPortLib</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Generoso Martello</Authors>
+    <Company>G-Labs</Company>
+    <Description>Serial Port libray for .Net
+      Features
+      - Easy to use
+      - Event driven
+      - Hot plug
+      - Automatically restabilish connection on error/disconnect</Description>
+    <PackageLicenseUrl>https://github.com/genielabs/serialport-lib-dotnet/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/genielabs/serialport-lib-dotnet/</PackageProjectUrl>
+    <PackageTags>serial port</PackageTags>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0" />
-    <PackageReference Include="SerialPortStream" Version="2.2.1.1" />
-    <PackageReference Include="NetCoreSerial" Version="1.3.2" />
+  <ItemGroup>
+    <PackageReference Include="System.IO.Ports" Version="6.0.0" />
   </ItemGroup>
-
-  <!-- Conditionally obtain references for the .NET Framework 4.0 target -->
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
-    <PackageReference Include="NLog" Version="4.5.10" />
-  </ItemGroup>
-
-  <!-- Conditionally obtain references for the .NET Framework 4.6.1 target -->
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-    <PackageReference Include="NLog" Version="4.5.10" />
+  <ItemGroup>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions">
+      <HintPath>..\..\..\..\.nuget\packages\microsoft.extensions.logging.abstractions\6.0.0\lib\net6.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

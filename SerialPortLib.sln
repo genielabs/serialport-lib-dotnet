@@ -3,11 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerialPortLib", "SerialPortLib\SerialPortLib.csproj", "{8118C0B9-3B16-47AA-8B24-E5B15F429F78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Serial", "Test.Serial\Test.Serial.csproj", "{20805410-4DCA-45E4-BBBA-0F3BA5734B8D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp.Net", "TestApp.Net\TestApp.Net.csproj", "{D5D595D2-58B5-4F26-ACCA-3DC11EEAA7C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerialPortLib.Tests", "SerialPortLib.Tests\SerialPortLib.Tests.csproj", "{7D5C40F9-8056-427E-9E06-13A161B00FB3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp.NetCore", "TestApp.NetCore\TestApp.NetCore.csproj", "{D5D595D2-58B5-4F26-ACCA-3DC11EEAA7C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerialPortLib.Tests", "SerialPortLib.Tests\SerialPortLib.Tests.csproj", "{60588868-01D1-4E40-A2BB-AA65A48ABF74}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,22 +13,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{20805410-4DCA-45E4-BBBA-0F3BA5734B8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{20805410-4DCA-45E4-BBBA-0F3BA5734B8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{20805410-4DCA-45E4-BBBA-0F3BA5734B8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{20805410-4DCA-45E4-BBBA-0F3BA5734B8D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8118C0B9-3B16-47AA-8B24-E5B15F429F78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8118C0B9-3B16-47AA-8B24-E5B15F429F78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8118C0B9-3B16-47AA-8B24-E5B15F429F78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8118C0B9-3B16-47AA-8B24-E5B15F429F78}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7D5C40F9-8056-427E-9E06-13A161B00FB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7D5C40F9-8056-427E-9E06-13A161B00FB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7D5C40F9-8056-427E-9E06-13A161B00FB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7D5C40F9-8056-427E-9E06-13A161B00FB3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D5D595D2-58B5-4F26-ACCA-3DC11EEAA7C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D5D595D2-58B5-4F26-ACCA-3DC11EEAA7C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5D595D2-58B5-4F26-ACCA-3DC11EEAA7C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5D595D2-58B5-4F26-ACCA-3DC11EEAA7C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60588868-01D1-4E40-A2BB-AA65A48ABF74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60588868-01D1-4E40-A2BB-AA65A48ABF74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60588868-01D1-4E40-A2BB-AA65A48ABF74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60588868-01D1-4E40-A2BB-AA65A48ABF74}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
