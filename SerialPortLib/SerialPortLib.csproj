@@ -10,7 +10,7 @@
       - Event driven
       - Hot plug
       - Automatically restabilish connection on error/disconnect</Description>
-    <PackageLicenseUrl>https://github.com/genielabs/serialport-lib-dotnet/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicense>./LICENSE</PackageLicense>
     <PackageProjectUrl>https://github.com/genielabs/serialport-lib-dotnet/</PackageProjectUrl>
     <PackageTags>serial port</PackageTags>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>

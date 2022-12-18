@@ -12,7 +12,7 @@ if (-not ([string]::IsNullOrEmpty($versionStr))) {
 
   $content | Out-File $root\$project\$project.csproj
 
-  & dotnet pack $root\$project
+  & dotnet pack $root\$project .
 }
 else {
   Write-Host "Version string is empty, possibly dry run or APPVEYOR_REPO_TAG_NAME environment variable is not set"
