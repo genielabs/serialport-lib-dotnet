@@ -26,7 +26,7 @@ using System.Threading;
 
 using System.IO.Ports;
 using System.Runtime.InteropServices;
-using Microsoft.Extensions.Logging;
+using NLog;
 
 namespace SerialPortLib
 {
@@ -62,7 +62,7 @@ namespace SerialPortLib
 
         #region Private Fields
 
-        private readonly ILogger<SerialPortInput> _logger;
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
         private SerialPort _serialPort;
 
         private string _portName = "";
@@ -112,9 +112,8 @@ namespace SerialPortLib
 
         #region Public Members
 
-        public SerialPortInput(ILogger<SerialPortInput> logger)
+        public SerialPortInput()
         {
-            _logger = logger;
             _connectionWatcherCts = new CancellationTokenSource();
             _readerCts = new CancellationTokenSource();
         }
@@ -383,17 +382,17 @@ namespace SerialPortLib
 
         private void LogDebug(string message)
         {
-            _logger.LogDebug(message);
+            _logger.Debug(message);
         }
 
         private void LogError(Exception ex)
         {
-            _logger.LogError(ex, null);
+            _logger.Error(ex, null);
         }
 
         private void LogError(SerialError error)
         {
-            _logger.LogError("SerialPort ErrorReceived: {0}", error);
+            _logger.Error("SerialPort ErrorReceived: {0}", error);
         }
 
         #endregion

@@ -11,14 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
       <PackageReference Include="NLog.Extensions.Logging" Version="5.2.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="System.IO.Ports">
-        <HintPath>bin\Debug\net6.0\runtimes\unix\lib\net6.0\System.IO.Ports.dll</HintPath>
-      </Reference>
     </ItemGroup>
 
 </Project>
