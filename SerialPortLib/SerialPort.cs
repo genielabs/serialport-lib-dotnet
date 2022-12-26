@@ -81,7 +81,7 @@ namespace SerialPortLib
         private Thread _connectionWatcher;
         private CancellationTokenSource _connectionWatcherCts;
 
-        private readonly object _accessLock = new();
+        private readonly object _accessLock = new object();
         private bool _disconnectRequested;
 
         #endregion

@@ -1,6 +1,6 @@
 version: 1.1.{build}
 image: Visual Studio 2022
-configuration: Debug
+configuration: Release
 before_build:
   - nuget restore
 build:
@@ -17,6 +17,13 @@ artifacts:
     name: SerialPortLib nupkg
     type: NuGetPackage
 deploy:
+  - provider: GitHub
+    auth_token:
+      secure: q0rRgZDDKmOASUrMCHGUlPh34wIipSYKWJiDeiwftkB7hLH/QyYhNL5MckCyse+1
+    draft: false
+    prerelease: false    
+    on:
+      appveyor_repo_tag: true
   - provider: NuGet
     api_key:
       secure: xe7KBrpDVPQYOr4XpJNPs2/9vdT5lO/qV5z8Qrv3yXWd6kQScl3UfB5WaF7olbfy

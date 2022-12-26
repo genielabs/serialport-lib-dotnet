@@ -1,6 +1,5 @@
 $project = "SerialPortLib"
 $root = (split-path -parent $MyInvocation.MyCommand.Definition) + '\..'
-#$version = [System.Reflection.Assembly]::LoadFile("$root\$project\bin\Debug\$project.dll").GetName().Version
 
 $versionStr = "{0}" -f ($env:APPVEYOR_REPO_TAG_NAME)
 
