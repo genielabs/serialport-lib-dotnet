@@ -130,7 +130,7 @@ namespace SerialPortLib
                 Disconnect();
                 Open();
                 _connectionWatcherCts = new CancellationTokenSource();
-                _connectionWatcher = new Thread(ConnectionWatcherTask);
+                _connectionWatcher = new Thread(ConnectionWatcherTask) { IsBackground = true };
                 _connectionWatcher.Start(_connectionWatcherCts.Token);
             }
             return IsConnected;
@@ -265,7 +265,7 @@ namespace SerialPortLib
                     _gotReadWriteError = false;
                     // Start the Reader task
                     _readerCts = new CancellationTokenSource();
-                    _reader = new Thread(ReaderTask);
+                    _reader = new Thread(ReaderTask) { IsBackground = true };
                     _reader.Start(_readerCts.Token);
                     OnConnectionStatusChanged(new ConnectionStatusChangedEventArgs(true));
                 }
