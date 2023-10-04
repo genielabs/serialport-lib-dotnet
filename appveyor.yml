@@ -15,7 +15,6 @@ after_test:
 artifacts:
   - path: '*.nupkg'
     name: SerialPortLib nupkg
-    type: NuGetPackage
 deploy:
   - provider: GitHub
     auth_token:

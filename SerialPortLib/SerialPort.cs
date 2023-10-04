@@ -1,7 +1,7 @@
 ﻿/*
   This file is part of SerialPortLib (https://github.com/genielabs/serialport-lib-dotnet)
  
-  Copyright (2012-2018) G-Labs (https://github.com/genielabs)
+  Copyright (2012-2023) G-Labs (https://github.com/genielabs)
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -124,7 +124,9 @@ namespace SerialPortLib
         public bool Connect()
         {
             if (_disconnectRequested)
+            {
                 return false;
+            }
             lock (_accessLock)
             {
                 Disconnect();
@@ -142,7 +144,9 @@ namespace SerialPortLib
         public void Disconnect()
         {
             if (_disconnectRequested)
+            {
                 return;
+            }
             _disconnectRequested = true;
             Close();
             lock (_accessLock)
@@ -150,7 +154,9 @@ namespace SerialPortLib
                 if (_connectionWatcher != null)
                 {
                     if (!_connectionWatcher.Join(5000))
+                    {
                         _connectionWatcherCts.Cancel();
+                    }
                     _connectionWatcher = null;
                 }
                 _disconnectRequested = false;
@@ -217,6 +223,11 @@ namespace SerialPortLib
             }
             return success;
         }
+
+        /// <summary>
+        /// Gets/Sets serial port reconnection delay in milliseconds.
+        /// </summary>
+        public int ReconnectDelay { get; set; } = 1000;
 
         #endregion
 
@@ -356,8 +367,8 @@ namespace SerialPortLib
                     try
                     {
                         Close();
-                        // wait 1 sec before reconnecting
-                        Thread.Sleep(1000);
+                        // wait "ReconnectDelay" seconds before reconnecting
+                        Thread.Sleep(ReconnectDelay);
                         if (!_disconnectRequested)
                         {
                             try
@@ -376,7 +387,9 @@ namespace SerialPortLib
                     }
                 }
                 if (!_disconnectRequested)
+                {
                     Thread.Sleep(1000);
+                }
             }
         }
 
@@ -407,7 +420,9 @@ namespace SerialPortLib
         {
             LogDebug(args.Connected.ToString());
             if (ConnectionStatusChanged != null)
+            {
                 ConnectionStatusChanged(this, args);
+            }
         }
 
         /// <summary>
@@ -418,7 +433,9 @@ namespace SerialPortLib
         {
             LogDebug(BitConverter.ToString(args.Data));
             if (MessageReceived != null)
+            {
                 MessageReceived(this, args);
+            }
         }
 
         #endregion
