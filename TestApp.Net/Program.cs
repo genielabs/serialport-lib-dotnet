@@ -12,18 +12,76 @@ namespace TestApp.NetCore
 {
     class Program
     {
-        private static string _defaultPort = "/dev/ttyUSB0";
+        private static string _defaultPort = "COM3";
         private static SerialPortInput _serialPort;
 
         // NOTE: To disable debug output uncomment the following two lines
         // NLog.LogLevel.Info;
         private static readonly NLog.LogLevel MinLogLevel = NLog.LogLevel.Debug;
 
-        public static void Main(string[] args)
-        {
+        public static void Main(string[] args) {
             var servicesProvider = BuildDi();
-            using (servicesProvider as IDisposable)
-            {
+            using (servicesProvider as IDisposable) {
+                _serialPort = servicesProvider.GetRequiredService<SerialPortInput>();
+                _serialPort.ConnectionStatusChanged += SerialPort_ConnectionStatusChanged;
+                _serialPort.MessageLineReceived += SerialPortOnMessageLineReceived;
+                _serialPort.MessageReceived += SerialPort_MessageReceived;
+                
+                _serialPort.SetPort("COM3", 38400);
+                _serialPort.Connect();
+
+                Console.WriteLine("Press Enter to exit");
+                Console.ReadLine();
+                Console.WriteLine("Goodbye!");
+                _serialPort.Disconnect();
+                
+            }
+        }
+        private static void SerialPortOnMessageLineReceived(Object sender, MessageReceivedLineEventArgs args) {
+            Console.WriteLine(args.Data);
+        }
+
+        static void SerialPort_MessageReceived(object sender, MessageReceivedEventArgs args)
+        {
+            Console.WriteLine("Received message: {0}", BitConverter.ToString(args.Data));
+            // On every message received we send an ACK message back to the device
+            _serialPort.SendMessage(new byte[] { 0x06 });
+        }
+
+        static void SerialPort_ConnectionStatusChanged(object sender, ConnectionStatusChangedEventArgs args) {
+            Console.WriteLine($"Serial port connection status = {args.Connected}, ConnectionEventType = {args.ConnectionEventType}");
+            
+        }
+
+        private static IServiceProvider BuildDi()
+        {
+            return new ServiceCollection()
+                .AddTransient<SerialPortInput>(provider =>new SerialPortInput(false))
+                .AddLogging(loggingBuilder =>
+                {
+                    // configure Logging with NLog
+                    loggingBuilder.ClearProviders();
+                    loggingBuilder.SetMinimumLevel(LogLevel.Trace);
+                    loggingBuilder.AddNLog(new LoggingConfiguration
+                    {
+                        LoggingRules =
+                        {
+                            new LoggingRule(
+                                "*",
+                                MinLogLevel,
+                                new ConsoleTarget
+                                {
+                                    Layout = new SimpleLayout("${longdate} ${callsite} ${level} ${message} ${exception}")
+                                })
+                        }
+                    });
+                })
+                .BuildServiceProvider();
+        }
+
+        private static void LibMain() {
+            var servicesProvider = BuildDi();
+            using (servicesProvider as IDisposable) {
                 _serialPort = servicesProvider.GetRequiredService<SerialPortInput>();
                 _serialPort.ConnectionStatusChanged += SerialPort_ConnectionStatusChanged;
                 _serialPort.MessageReceived += SerialPort_MessageReceived;
@@ -70,44 +128,6 @@ namespace TestApp.NetCore
                     _serialPort.Disconnect();
                 }
             }
-        }
-
-        static void SerialPort_MessageReceived(object sender, MessageReceivedEventArgs args)
-        {
-            Console.WriteLine("Received message: {0}", BitConverter.ToString(args.Data));
-            // On every message received we send an ACK message back to the device
-            _serialPort.SendMessage(new byte[] { 0x06 });
-        }
-
-        static void SerialPort_ConnectionStatusChanged(object sender, ConnectionStatusChangedEventArgs args)
-        {
-            Console.WriteLine("Serial port connection status = {0}", args.Connected);
-        }
-
-        private static IServiceProvider BuildDi()
-        {
-            return new ServiceCollection()
-                .AddTransient<SerialPortInput>()
-                .AddLogging(loggingBuilder =>
-                {
-                    // configure Logging with NLog
-                    loggingBuilder.ClearProviders();
-                    loggingBuilder.SetMinimumLevel(LogLevel.Trace);
-                    loggingBuilder.AddNLog(new LoggingConfiguration
-                    {
-                        LoggingRules =
-                        {
-                            new LoggingRule(
-                                "*",
-                                MinLogLevel,
-                                new ConsoleTarget
-                                {
-                                    Layout = new SimpleLayout("${longdate} ${callsite} ${level} ${message} ${exception}")
-                                })
-                        }
-                    });
-                })
-                .BuildServiceProvider();
         }
     }
 }
