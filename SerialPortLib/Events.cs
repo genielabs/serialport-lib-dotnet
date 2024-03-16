@@ -23,8 +23,13 @@
 
 using System;
 
-namespace SerialPortLib
-{
+namespace SerialPortLib {
+
+    public enum ConnectionEventType {
+        Disconnected,
+        DisconnectWithRetry,
+        Connected
+    }
 
     /// <summary>
     /// Connected state changed event arguments.
@@ -35,14 +40,24 @@ namespace SerialPortLib
         /// The connected state.
         /// </summary>
         public readonly bool Connected;
+        
+        /// <summary>
+        /// Message
+        /// </summary>
+        public readonly ConnectionEventType ConnectionEventType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SerialPortLib.ConnectionStatusChangedEventArgs"/> class.
         /// </summary>
         /// <param name="state">State of the connection (true = connected, false = not connected).</param>
-        public ConnectionStatusChangedEventArgs(bool state)
-        {
+        /// <param name="connectionEventType">Details on the state of the connection:            
+        ///     Disconnected=The connection has been lost and the library will not attempt to reconnect,
+        ///     DisconnectWithRetry=The connection has been lost and the library will attempt to reconnect,
+        ///     Connected=The connection has been established
+        /// </param>
+        public ConnectionStatusChangedEventArgs(bool state, ConnectionEventType connectionEventType) {
             Connected = state;
+            ConnectionEventType = connectionEventType;
         }
     }
 
@@ -63,6 +78,26 @@ namespace SerialPortLib
         public MessageReceivedEventArgs(byte[] data)
         {
             Data = data;
+        }
+    }
+    
+    /// <summary>
+    /// Message received event arguments from ReadLine.
+    /// </summary>
+    public class MessageReceivedLineEventArgs
+    {
+        /// <summary>
+        /// The line string.
+        /// </summary>
+        public readonly string Data;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SerialPortLib.MessageReceivedEventArgs"/> class.
+        /// </summary>
+        /// <param name="line"></param>
+        public MessageReceivedLineEventArgs(string Line)
+        {
+            Data =Line;
         }
     }
 }
