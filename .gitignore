@@ -5,7 +5,7 @@
 [Rr]eleases/
 [Bb]in/
 [Oo]bj/
-
+[Vv]s/
 # NuGet
 packages
 !packages/repositories.config

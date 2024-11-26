@@ -87,7 +87,11 @@ namespace TestApp.NetCore
         private static IServiceProvider BuildDi()
         {
             return new ServiceCollection()
-                .AddTransient<SerialPortInput>()
+                .AddTransient(sp =>
+                {
+                    var logger = sp.GetRequiredService<ILogger<Program>>();
+                    return new SerialPortInput(logger);
+                })
                 .AddLogging(loggingBuilder =>
                 {
                     // configure Logging with NLog

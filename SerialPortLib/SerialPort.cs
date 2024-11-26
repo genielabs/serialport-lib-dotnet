@@ -21,12 +21,11 @@
  *     Project Homepage: https://github.com/genielabs/serialport-lib-dotnet
  */
 
+using Microsoft.Extensions.Logging;
 using System;
-using System.Threading;
-
 using System.IO.Ports;
 using System.Runtime.InteropServices;
-using NLog;
+using System.Threading;
 
 namespace SerialPortLib
 {
@@ -62,7 +61,7 @@ namespace SerialPortLib
 
         #region Private Fields
 
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private static ILogger _logger;
         private SerialPort _serialPort;
 
         private string _portName = "";
@@ -112,10 +111,11 @@ namespace SerialPortLib
 
         #region Public Members
 
-        public SerialPortInput()
+        public SerialPortInput(ILogger logger = default)
         {
             _connectionWatcherCts = new CancellationTokenSource();
             _readerCts = new CancellationTokenSource();
+            _logger = logger;
         }
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace SerialPortLib
                 {
                     _serialPort.Write(message, 0, message.Length);
                     success = true;
-                    LogDebug(BitConverter.ToString(message));
+                    LogDebug($"SEND: {BitConverter.ToString(message)}");
                 }
                 catch (Exception e)
                 {
@@ -321,7 +321,7 @@ namespace SerialPortLib
 
         private void ReaderTask(object data)
         {
-            var ct = (CancellationToken) data;
+            var ct = (CancellationToken)data;
             while (IsConnected && !ct.IsCancellationRequested)
             {
                 int msglen = 0;
@@ -357,7 +357,7 @@ namespace SerialPortLib
 
         private void ConnectionWatcherTask(object data)
         {
-            var ct = (CancellationToken) data;
+            var ct = (CancellationToken)data;
             // This task takes care of automatically reconnecting the interface
             // when the connection is drop or if an I/O error occurs
             while (!_disconnectRequested && !ct.IsCancellationRequested)
@@ -395,17 +395,17 @@ namespace SerialPortLib
 
         private void LogDebug(string message)
         {
-            _logger.Debug(message);
+            _logger?.LogDebug(message);
         }
 
         private void LogError(Exception ex)
         {
-            _logger.Error(ex, null);
+            _logger?.LogError(ex, null);
         }
 
         private void LogError(SerialError error)
         {
-            _logger.Error("SerialPort ErrorReceived: {0}", error);
+            _logger?.LogError("SerialPort ErrorReceived: {0}", error);
         }
 
         #endregion
@@ -431,7 +431,7 @@ namespace SerialPortLib
         /// <param name="args">Arguments.</param>
         protected virtual void OnMessageReceived(MessageReceivedEventArgs args)
         {
-            LogDebug(BitConverter.ToString(args.Data));
+            LogDebug($"RECEIVED: {BitConverter.ToString(args.Data)}");
             if (MessageReceived != null)
             {
                 MessageReceived(this, args);
