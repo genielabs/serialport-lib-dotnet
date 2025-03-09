@@ -33,9 +33,39 @@ namespace SerialPortLib
             Logger = loggerFactory.CreateLogger("SerialPortInput");
         }
 
+        public static void Log(LogLevel level, string message, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
+        {
+            Logger.LogWithCallInfo(level, message, null, memberName, filePath, lineNumber);
+        }
+
+        public static void LogInfo(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
+        {
+            Log(LogLevel.Information, message, memberName, filePath, lineNumber);
+        }
+
         public static void LogDebug(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
         {
-            Logger.LogWithCallInfo(LogLevel.Debug, message, null, memberName, filePath, lineNumber);
+            Log(LogLevel.Debug, message, memberName, filePath, lineNumber);
+        }
+
+        public static void LogCritical(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
+        {
+            Log(LogLevel.Critical, message, memberName, filePath, lineNumber);
+        }
+
+        public static void LogTrace(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
+        {
+            Log(LogLevel.Trace, message, memberName, filePath, lineNumber);
+        }
+
+        public static void LogWarning(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
+        {
+            Log(LogLevel.Warning, message, memberName, filePath, lineNumber);
+        }
+
+        public static void LogError(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
+        {
+            Log(LogLevel.Error, message, memberName, filePath, lineNumber);
         }
 
         public static void LogError(Exception ex, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
