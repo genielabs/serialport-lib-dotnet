@@ -2,10 +2,6 @@
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NLog.Config;
-using NLog.Extensions.Logging;
-using NLog.Layouts;
-using NLog.Targets;
 using SerialPortLib;
 
 namespace TestApp.NetCore
@@ -14,10 +10,6 @@ namespace TestApp.NetCore
     {
         private static string _defaultPort = "/dev/ttyUSB0";
         private static SerialPortInput _serialPort;
-
-        // NOTE: To disable debug output uncomment the following two lines
-        // NLog.LogLevel.Info;
-        private static readonly NLog.LogLevel MinLogLevel = NLog.LogLevel.Debug;
 
         public static void Main(string[] args)
         {
@@ -32,7 +24,7 @@ namespace TestApp.NetCore
                 {
                     Console.WriteLine("\nPlease enter serial to open (eg. \"COM7\" or \"/dev/ttyUSB0\" without double quotes),");
                     Console.WriteLine("or enter \"QUIT\" to exit.\n");
-                    Console.Write("Port [{0}]: ", _defaultPort);
+                    Console.Write($"Port [{_defaultPort}]: ");
                     string port = Console.ReadLine();
                     if (String.IsNullOrWhiteSpace(port))
                         port = _defaultPort;
@@ -46,13 +38,13 @@ namespace TestApp.NetCore
                     _serialPort.SetPort(port, 115200);
                     _serialPort.Connect();
 
-                    Console.WriteLine("Waiting for serial port connection on {0}.", port);
+                    Console.WriteLine($"Waiting for serial port connection on {port}.");
                     while (!_serialPort.IsConnected)
                     {
                         Console.Write(".");
                         Thread.Sleep(1000);
                     }
-                    // This is a test message (ZWave protocol message for getting the nodes stored in the Controller)
+                    // This is a test message (Z-Wave protocol message for getting the nodes stored in the Controller)
                     var testMessage = new byte[] { 0x01, 0x03, 0x00, 0x02, 0xFE };
                     // Try sending some data if connected
                     if (_serialPort.IsConnected)
@@ -61,7 +53,7 @@ namespace TestApp.NetCore
                         for (int s = 0; s < 5; s++)
                         {
                             Thread.Sleep(2000);
-                            Console.WriteLine("\nSEND [{0}]", (s + 1));
+                            Console.WriteLine($"\nSEND [{(s + 1)}]");
                             _serialPort.SendMessage(testMessage);
                         }
                     }
@@ -74,7 +66,9 @@ namespace TestApp.NetCore
 
         static void SerialPort_MessageReceived(object sender, MessageReceivedEventArgs args)
         {
-            Console.WriteLine("Received message: {0}", BitConverter.ToString(args.Data));
+            // New message buffer received
+            //Console.Write(System.Text.Encoding.UTF8.GetString(args.Data));
+            Console.WriteLine(BitConverter.ToString(args.Data));
             // On every message received we send an ACK message back to the device
             _serialPort.SendMessage(new byte[] { 0x06 });
         }
@@ -88,25 +82,6 @@ namespace TestApp.NetCore
         {
             return new ServiceCollection()
                 .AddTransient<SerialPortInput>()
-                .AddLogging(loggingBuilder =>
-                {
-                    // configure Logging with NLog
-                    loggingBuilder.ClearProviders();
-                    loggingBuilder.SetMinimumLevel(LogLevel.Trace);
-                    loggingBuilder.AddNLog(new LoggingConfiguration
-                    {
-                        LoggingRules =
-                        {
-                            new LoggingRule(
-                                "*",
-                                MinLogLevel,
-                                new ConsoleTarget
-                                {
-                                    Layout = new SimpleLayout("${longdate} ${callsite} ${level} ${message} ${exception}")
-                                })
-                        }
-                    });
-                })
                 .BuildServiceProvider();
         }
     }

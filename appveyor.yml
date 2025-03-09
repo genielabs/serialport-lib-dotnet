@@ -1,4 +1,4 @@
-version: 1.1.{build}
+version: 1.2.{build}
 image: Visual Studio 2022
 configuration: Release
 before_build:
@@ -18,14 +18,14 @@ artifacts:
 deploy:
   - provider: GitHub
     auth_token:
-      secure: q0rRgZDDKmOASUrMCHGUlPh34wIipSYKWJiDeiwftkB7hLH/QyYhNL5MckCyse+1
+      secure: EV/QbdjryLysyefCkxLXLBr4icYTdmOi+6wtgrB2mLfrP0qTQPiwj7w4L2i5fi7q
     draft: false
     prerelease: false    
     on:
       appveyor_repo_tag: true
   - provider: NuGet
     api_key:
-      secure: xe7KBrpDVPQYOr4XpJNPs2/9vdT5lO/qV5z8Qrv3yXWd6kQScl3UfB5WaF7olbfy
+      secure: QHC8Twb1rsEXWGXXNzQhuQowwvBUVecFB0iPkPG5Y8I0zCKeBcRk3oWgEhB5zHR8
     skip_symbols: false
     artifact: /.*\.nupkg/
     on:
