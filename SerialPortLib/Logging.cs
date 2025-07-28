@@ -91,7 +91,7 @@ namespace SerialPortLib
                        {"CallerLineNumber", lineNumber}
                    }))
             {
-                logger.Log(logLevel, message, exception);
+                logger.Log(logLevel, exception, "{Message}", message);
             }
         }
     }
