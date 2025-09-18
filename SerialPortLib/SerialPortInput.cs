@@ -26,6 +26,7 @@ using System.Threading;
 using System.IO.Ports;
 using System.Runtime.CompilerServices; // Required for CallerMemberName
 using System.Runtime.InteropServices;
+using GLabs.Logging;
 
 namespace SerialPortLib
 {
@@ -61,6 +62,8 @@ namespace SerialPortLib
         #region Private Fields
 
         private SerialPort _serialPort;
+        private static readonly Logger Log = LogManager.GetLogger("SerialPortLib");
+
 
         private string _portName = "";
         private int _baudRate = 115200;
@@ -194,7 +197,7 @@ namespace SerialPortLib
                 {
                     Connect();      // Take into account immediately the new connection parameters
                 }
-                LogDebug($"Port parameters changed (port name {_portName} / baudrate {_baudRate} / stopbits {_stopBits} / parity {_parity} / databits {_dataBits})");
+                Log.Debug($"Port parameters changed (port name {_portName} / baudrate {_baudRate} / stopbits {_stopBits} / parity {_parity} / databits {_dataBits})");
             }
         }
 
@@ -228,21 +231,21 @@ namespace SerialPortLib
                 {
                     _serialPort.Write(message, 0, message.Length);
                     success = true;
-                    LogDebug(BitConverter.ToString(message));
+                    Log.Debug(BitConverter.ToString(message));
                 }
                 catch (ObjectDisposedException e)
                 {
                     _gotReadWriteError = true;
-                    LogError(e);
+                    Log.Error(e);
                 }
                 catch (TimeoutException e)
                 {
                     _gotReadWriteError = true;
-                    LogError(e);
+                    Log.Error(e);
                 }
                 catch (Exception e)
                 {
-                    LogError(e);
+                    Log.Error(e);
                 }
             }
             return success;
@@ -299,7 +302,7 @@ namespace SerialPortLib
                 }
                 catch (Exception e)
                 {
-                    LogError(e);
+                    Log.Error(e);
                     Close();
                 }
                 if (_serialPort != null && _serialPort.IsOpen)
@@ -337,7 +340,7 @@ namespace SerialPortLib
                         }
                         catch (Exception ex)
                         {
-                            LogError(ex); // Log the exception during close
+                            Log.Error(ex); // Log the exception during close
                         }
                         if (!_serialPort.IsOpen)
                         {
@@ -368,7 +371,7 @@ namespace SerialPortLib
                 try
                 {
                     var readerTask = _serialPort?.BaseStream.ReadAsync(_buffer, 0, _buffer.Length, ct);
-                    readerTask?.Wait();
+                    readerTask?.Wait(ct);
                     if (readerTask?.Result > 0)
                     {
                         byte[] received = new byte[readerTask.Result];
@@ -383,7 +386,7 @@ namespace SerialPortLib
                 }
                 catch (Exception e)
                 {
-                    LogError(e);
+                    Log.Error(e);
                     _gotReadWriteError = true;
                     Thread.Sleep(DefaultReconnectDelayMs);
                 }
@@ -409,24 +412,14 @@ namespace SerialPortLib
                 }
                 catch (Exception e)
                 {
-                    LogError(e);
+                    Log.Error(e);
                 }
             }
         }
 
-        private void LogDebug(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
-        {
-            Logging.LogDebug(message, memberName);
-        }
-
-        private void LogError(Exception ex, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
-        {
-            Logging.LogError(ex, memberName);
-        }
-
         private void LogError(SerialError error, [CallerMemberName] string methodName = "")
         {
-            Logging.LogError(error, methodName);
+            Log.Error("SerialPort error occurred in {MethodName}: {Error}", methodName, error);
         }
 
         #endregion
@@ -439,7 +432,7 @@ namespace SerialPortLib
         /// <param name="args">Arguments.</param>
         protected virtual void OnConnectionStatusChanged(ConnectionStatusChangedEventArgs args)
         {
-            LogDebug(args.Connected.ToString());
+            Log.Debug(args.Connected.ToString());
             ConnectionStatusChanged?.Invoke(this, args);
         }
 
@@ -449,7 +442,7 @@ namespace SerialPortLib
         /// <param name="args">Arguments.</param>
         protected virtual void OnMessageReceived(MessageReceivedEventArgs args)
         {
-            LogDebug(BitConverter.ToString(args.Data));
+            Log.Debug(BitConverter.ToString(args.Data));
             MessageReceived?.Invoke(this, args);
         }
 

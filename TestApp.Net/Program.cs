@@ -1,5 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
+using GLabs.Logging;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SerialPortLib;
@@ -13,6 +16,22 @@ namespace TestApp.NetCore
 
         public static void Main(string[] args)
         {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false)
+                .Build();
+
+            var serviceProvider = new ServiceCollection()
+                .AddLogging(builder =>
+                {
+                    builder.AddConfiguration(configuration.GetSection("Logging"));
+                    builder.AddConsole();
+                })
+                .BuildServiceProvider();
+
+            var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+            LogManager.Initialize(loggerFactory);
+            
             var servicesProvider = BuildDi();
             using (servicesProvider as IDisposable)
             {
