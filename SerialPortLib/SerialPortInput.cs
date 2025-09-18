@@ -371,7 +371,7 @@ namespace SerialPortLib
                 try
                 {
                     var readerTask = _serialPort?.BaseStream.ReadAsync(_buffer, 0, _buffer.Length, ct);
-                    readerTask?.Wait();
+                    readerTask?.Wait(ct);
                     if (readerTask?.Result > 0)
                     {
                         byte[] received = new byte[readerTask.Result];
