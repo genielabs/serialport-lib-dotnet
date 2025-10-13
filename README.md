@@ -13,6 +13,10 @@
 - Compatible with Mono
 - It overcomes the lack of *DataReceived* event in Mono
 
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/genielabs/serialport-lib-dotnet)
+
+
 ## NuGet Package
 
 SerialPortLib  is available as a [NuGet package](https://www.nuget.org/packages/SerialPortLib).
