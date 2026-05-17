@@ -1,5 +1,9 @@
-version: 1.2.{build}
+version: 1.4.{build}
 image: Visual Studio 2022
+install:
+  - ps: |
+      Invoke-WebRequest -Uri 'https://dot.net/v1/dotnet-install.ps1' -UseBasicParsing -OutFile "$env:temp\dotnet-install.ps1"
+      & $env:temp\dotnet-install.ps1 -Architecture x64 -Version '10.0.100' -InstallDir "$env:ProgramFiles\dotnet"
 configuration: Release
 before_build:
   - nuget restore
@@ -18,14 +22,14 @@ artifacts:
 deploy:
   - provider: GitHub
     auth_token:
-      secure: EV/QbdjryLysyefCkxLXLBr4icYTdmOi+6wtgrB2mLfrP0qTQPiwj7w4L2i5fi7q
+      secure: QJoBiqbeg1z+3WRoH1IdXRsnXtvwS95U2Z89JH9DrnEhJYMYbRpKjUmGEbOU3OnDLFz8gKqzP8y7KpL226lCb/Y+W6CTt7EGouenMIKnzZBllZVvSG73LdhHgD8RbxIy
     draft: false
     prerelease: false    
     on:
       appveyor_repo_tag: true
   - provider: NuGet
     api_key:
-      secure: QHC8Twb1rsEXWGXXNzQhuQowwvBUVecFB0iPkPG5Y8I0zCKeBcRk3oWgEhB5zHR8
+      secure: VLSz2Mm3RJU7/uhvY1kOSfewPUL43YB7sxMOadvqUyrIFcU2DV2S84mtuySIJJX0
     skip_symbols: false
     artifact: /.*\.nupkg/
     on:
